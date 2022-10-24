@@ -35,27 +35,13 @@ app.use('/auth', authRouter);
 // syncing with DB tbales/models
 const db = require('./models/db');
 db.sequelize
-  .sync({alter:true})
+  .sync()
   .then(() => {
     console.log('------MODELS SYNCED WITH DB------');
   })
   .catch((err) => {
     console.log('------COULD NOT SYNC MODELS WITH DB------', err);
   });
-
-// db.sequelize
-//   .sync({ force: true })
-//   .then(() => {
-//     return db.users.create(
-//       {
-//         firstName: 'Ed',
-//         middleName: 'Owen',
-//         lastName: 'Udusegbe',
-//         username: 'space_ed',
-//         hashedPassword: 'ed123',
-//         email: 'ed@gmail.com'
-//       })
-//   });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
