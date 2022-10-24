@@ -14,8 +14,8 @@ require('dotenv').config();
 
 var port = normalizePort(process.env.DB_PORT || '3000');
 app.set('port', port);
-console.log(`connected to http://localhost:${port}`);
-
+console.log(`connected to http://127.0.0.1:${port}
+connected to http://${process.env.HOST}:${port}`);
 /**
  * Create HTTP server.
  */
