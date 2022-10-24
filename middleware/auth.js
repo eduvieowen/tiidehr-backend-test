@@ -1,7 +1,8 @@
 
 const {jwt, verify} = require('jsonwebtoken')
-const config = require('../config/authConfig')
 const { constants } = require('../controllers/constants')
+
+require('dotenv').config();
 
 verifyToken = (req, res, next) => {
     let token = req.headers['Authorization'];
@@ -11,7 +12,7 @@ verifyToken = (req, res, next) => {
         return res.status(403).send({message : 'Forbidden Access'})
     };
     // validate if token exists
-    verify(token, config.secretKey, (err, decoded) => {
+    verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if(err){
             return res.status(401).send({message: constants.handleError(err, res) || 'Unauthorized access'})
         }

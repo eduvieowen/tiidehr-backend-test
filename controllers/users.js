@@ -12,7 +12,9 @@ exports.userController = {
                 res.status(200).send(data)
             })
             .catch(err => {
-                constants.handleError(err, res)
+                res.status(400).send({
+                    message: err.message || 'could not create record'
+                })
             });
     },
     getAll: (req, res) => {
@@ -44,7 +46,7 @@ exports.userController = {
                 res.status(400).send({
                     message: err.message || 'could not fetch record'
                 })
-            })
+            });
     },
     update: (req, res) => {
         const user = req.body;
@@ -63,7 +65,9 @@ exports.userController = {
                 })
             })
             .catch(err => {
-                constants.handleError(err, res)
+                res.status(400).send({
+                    message: err.message || 'could not update record'
+                })
             });
     },
     delete: (req, res) => {

@@ -35,7 +35,7 @@ app.use('/auth', authRouter);
 // syncing with DB tbales/models
 const db = require('./models/db');
 db.sequelize
-  .sync()
+  .sync({alter : true})
   .then(() => {
     console.log('------MODELS SYNCED WITH DB------');
   })

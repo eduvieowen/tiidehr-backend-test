@@ -30,11 +30,11 @@ module.exports = (sequelize, dataType) => {
                 allowNull: false,
                 unique: true,
                 validate: {
-                    len: {args:[6, 10], msg:'username must be min of 6 and max of 10 chars'},
+                    // len: {args:[6, 10], msg:'username must be min of 6 and max of 10 chars'},
                     notNull:{msg: 'Please enter your username'}
                 }
             },
-            hashedPassword: {
+            password: {
                 type: dataType.STRING,
                 validate: {
                     // is: /^[0-9a-f]{64}/i, msg: 'password must be alphanumeric'

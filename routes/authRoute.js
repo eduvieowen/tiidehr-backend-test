@@ -2,7 +2,7 @@
 var express = require('express');
 var router = express.Router();
 router.use(express.json());
-const {authController} = require('../controllers/authCont')
+const {authController} = require('../controllers/authCont');
 
 /* signup */
 router.post('/signup', authController.signup);

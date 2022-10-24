@@ -1,29 +1,43 @@
 
 const db = require('../models/db');
 const { constants } = require('./constants')
+const users = db.users;
+
 const bcrypt = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
-const users = db.users;
+
+const sendMail = require('../middleware/mailSender');
+
 require('dotenv').config();
-// const config = require('../config/authConfig')
 
 exports.authController = {
     signup: (req, res) => {
         const newUser = req.body;
-        newUser.hashedPassword = bcrypt.hashSync(newUser.hashedPassword, 15); // convert to hashedpassword
+        newUser.password = bcrypt.hashSync(newUser.password, 15); // converts to password
         users
             .create(newUser)
-            .then(data => {
-                res.status(200).send(data)
+            .then((user) => {
+                sendMail('tiidehr@info.com', req.body.email, 'Welcome to TIIDEHR', "Your TiiderHr Verification Code: 992-965", "Your TiiderHr Verification Code: <h1 style='color:red'>992-965</h1>")
+                res.status(200).send({
+                    firstName : user.firstName,
+                    lastName : user.lastName,
+                    username : user.username,
+                    email : user.email})
             })
             .catch(err => {
-                constants.handleError(err, res)
+                res.status(400).send({
+                    message: err.message || 'could not signup'
+                })
             });
     },
     signin: (req, res) => {
         users
             .findOne({
-                where:{username:req.body.username}
+                where :
+                {
+                    username : req.body.username,
+                    email : req.body.email
+                }
             })
             .then(user => {
                 // if record is not found, return invalid username or password
@@ -32,15 +46,17 @@ exports.authController = {
                 }
 
                 // compare entered password with database password
-                let isValidPassword = bcrypt.compareSync(req.body.hashedPassword, user.hashedPassword);
+                let isValidPassword = bcrypt.compareSync(req.body.password, user.password);
                 // if not valid, return invalid username or password
                 if (!isValidPassword) {
                     return res.status(401).send({message:'invalid username or password'})
                 }
                 // data in payload is encrypted
-                let payload = {
+                let payload = 
+                {
                     id : user.id,
-                    username : user.username
+                    username : user.username,
+                    email : user.email
                 }
                 let token = sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn : process.env.ACCESS_TOKEN_LIFE})
 
@@ -49,7 +65,7 @@ exports.authController = {
             })
             .catch(err => {
                 res.status(400).send({
-                    message: err.message || 'could not fetch record'
+                    message: err.message || 'could not signin'
                 })
             });
     },
